@@ -1,11 +1,22 @@
 "use client";
-
+import { Skeleton, IssueActions } from "@/app/components";
 import { Table } from "@radix-ui/themes";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import IssueActions from "../components/IssueActions";
+import { useEffect, useState } from "react";
 
 const LoadingSkeleton = () => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    // show skeleton only if loading takes >= 200ms
+    const timer = setTimeout(() => {
+      setVisible(true);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!visible) return null;
+
   const issues = Array.from({ length: 5 }).map((_, index) => ({
     id: index,
   }));
@@ -30,16 +41,18 @@ const LoadingSkeleton = () => {
           {issues.map((issue) => (
             <Table.Row key={issue.id}>
               <Table.Cell>
-                <Skeleton width={120} />
-                <div className="block md:hidden">
+                <Skeleton width={140} />
+                <div className="block md:hidden mt-1">
                   <Skeleton width={80} />
                 </div>
               </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
                 <Skeleton width={80} />
               </Table.Cell>
+
               <Table.Cell className="hidden md:table-cell">
-                <Skeleton width={80} />
+                <Skeleton width={100} />
               </Table.Cell>
             </Table.Row>
           ))}
